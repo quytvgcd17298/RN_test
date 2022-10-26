@@ -72,13 +72,8 @@ export default function App() {
     hideDatePicker();
   };
 
-  const seclect = () => {
-  console.log({fullname})
-  console.log(date)
-  console.log(gender)
-  console.log(major)
+  const onSubmit = data => console.log(data);
 
-  }
 
   return (
     <View style={styles.container}>
@@ -281,7 +276,7 @@ export default function App() {
       <View style = {{ alignItems:'center'}}>
         <TouchableOpacity 
         style = {styles.button}
-        onPress={()=>{seclect()}}
+        onPress={()=>{handleSubmit(onSubmit)}}
         >
           <Text>Chon</Text>
         </TouchableOpacity>
