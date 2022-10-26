@@ -9,10 +9,19 @@
     "web": "expo start --web"
   },
   "dependencies": {
+    "@hookform/resolvers": "^2.9.10",
+    "@react-native-picker/picker": "^2.4.8",
     "expo": "~46.0.16",
     "expo-status-bar": "~1.4.0",
+    "moment": "^2.29.4",
     "react": "18.0.0",
-    "react-native": "0.69.6"
+    "react-dom": "^18.0.0",
+    "react-hook-form": "^7.38.0",
+    "react-native": "0.69.6",
+    "react-native-elements": "^3.4.2",
+    "react-native-modal-datetime-picker": "^14.0.0",
+    "react-native-picker-select": "^8.0.4",
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9"
