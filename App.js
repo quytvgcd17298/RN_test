@@ -8,55 +8,55 @@ import { validateSchema } from './Validation';
 import { yupResolver } from "@hookform/resolvers/yup";
 import { CheckBox } from 'react-native-elements';
 
+import RNDateTimePicker from '@react-native-community/datetimepicker';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import moment from "moment";
 
-import {Picker} from '@react-native-picker/picker';
+import DateT from 'react-native-datepicker'
+import DropDownPicker from 'react-native-dropdown-picker';
+import { date } from 'yup';
+
+
+const listMajor = [
+  { label: 'Lập trình viên', value: 'Lập trình viên' },
+  { label: 'Tester', value: 'Tester' },
+  { label: 'Quản lý', value: 'Quản lý' },
+]
+
+const genderData = ['Nam', 'Nữ', 'Khác'];
 
 export default function App() {
 
-  const [male, setMale] = useState(false);
+/*   const [male, setMale] = useState(false);
   const [female, setFemale] = useState(false);
   const [other, setOther] = useState(false);
-  const [gender, setGender] = useState("")
+  const [genders, setGenders] = useState([]) */
 
-  const [date, setDate] = useState("");
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+   
+
+  const [majorOpen, setMajorOpen] = useState(false)
+
   
-  const [major, setMajor] = useState("");
   const {
     control,
     handleSubmit,
+    getValues,
     formState: { errors },
   } = useForm({
     defaultValues:{
       fullname:"",
+      dob:"",
       idcard:"",
       phone:"",
-      email:""
+      email:"",
+      gender:"",
+      major:""
     },
     mode: "onChange",
     resolver: yupResolver(validateSchema)
   });
 
-  const genderMale = () =>{
-    setMale(true);
-    setFemale(false);
-    setOther(false);
-    setGender("Nam")
-  }
-  const genderFemale = () =>{
-    setMale(false);
-    setFemale(true);
-    setOther(false);
-    setGender("Nữ")
-  }
-  const genderOther = () =>{
-    setMale(false);
-    setFemale(false);
-    setOther(true);
-    setGender("Khác")
-  }
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -66,19 +66,19 @@ export default function App() {
     setDatePickerVisibility(false);
   };
 
-  const handleConfirm = (date) => {
-    console.log("A date has been picked: ", date);
-    setDate(moment(date).format("DD/MM/YYYY"));
+  const handleConfirm = (value) => {
+    console.log("A date has been picked: ", value);
     hideDatePicker();
   };
 
-  const onSubmit = data => console.log(data);
+  const onSubmit = (data) => {
+  console.log(getValues(data))
+  ;}
 
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <KeyboardAvoidingView>
-        <ScrollView>
 
         <View style = {{paddingTop:30, paddingBottom:15}}>
         <Controller
@@ -108,20 +108,31 @@ export default function App() {
 
       <View style={styles.inputContainer}>
         <Text style = {{marginBottom:15}}>Ngày sinh</Text>
+        <Controller
+            name="dob"
+            control={control}
+            rules={{
+              required: true,
+             }}
+            render={({ field: { onChange, value } }) => (
+        <View>
         <DateTimePickerModal 
         isVisible={isDatePickerVisible}
         mode="date"
-        onConfirm={handleConfirm}
+        onChangeValue={value}
+        onConfirm={(value, date)=>handleConfirm(value)}
+        onChange={onChange}
+        value={value}
         onCancel={hideDatePicker}
         date={new Date()}
         ></DateTimePickerModal>
         <TouchableOpacity
-          onPress={() => showDatePicker()}
+          onPress={showDatePicker}
           style={{
             flexDirection: "row",
             alignItems:"center",
             height: 45,
-            width:"85%",
+            width:"95%",
             borderRadius: 4,
             borderWidth: 1,
             paddingHorizontal: 12,
@@ -139,36 +150,42 @@ export default function App() {
             {date || "Chọn ngày"}
           </Text>
         </TouchableOpacity>
+              </View>
+            )}></Controller>
       </View>
 
       <View>
         <Text>Giới tính</Text>
-        <View style={{flexDirection:'row'}}>
-        <CheckBox
-        title="Nam"
-        center
-        checked={male}
-        checkedIcon="dot-circle-o"
-        uncheckedIcon="circle-o"
-        onPress={genderMale}
-        ></CheckBox>
-        <CheckBox
-        title="Nữ"
-        center
-        checked={female}
-        checkedIcon="dot-circle-o"
-        uncheckedIcon="circle-o"
-        onPress={genderFemale}
-        ></CheckBox>
-        <CheckBox
-        title="Khác"
-        center
-        checked={other}
-        checkedIcon="dot-circle-o"
-        uncheckedIcon="circle-o"
-        onPress={genderOther}
-        ></CheckBox>
+        <Controller
+        name="gender"
+        control={control}
+        render={({ field: { onChange, value } }) => (
+          <View style = {{flexDirection:"row"}}>
+          {genderData.map(genderData => (
+            <View
+            style = {{ padding:15}}
+            key={genderData}
+            >
+              <TouchableOpacity 
+              style={{
+                width:25,
+                height:25,
+                borderWidth:1,
+                marginRight:5,
+                alignItems:'center',
+                borderRadius:15
+              }}
+              onPress={() => onChange(genderData)}
+              >
+                {value === genderData && <Text style = {{ color:"green", fontWeight:'bold'}}>X</Text>}
+              </TouchableOpacity>
+              <Text>{genderData}</Text>
+            </View>
+          ))}
         </View>
+        )}
+        >
+        </Controller>
       </View>
 
       <View style = {styles.inputContainer}>
@@ -251,40 +268,49 @@ export default function App() {
 
       <View style = {styles.inputContainer}>
         <Text>Nghề nghiệp</Text>
-        <View
-        style={{
-          borderColor: "#A5A5A5",
-          marginVertical: 10,
-          borderRadius: 4,
-          borderWidth: 1,
-          paddingHorizontal: 12,
-          height:50,
-          width:"85%"
-          }}
-        >
-        <Picker
-          selectedValue={major}
-          onValueChange={(itemValue, itemIndex) =>
-            setMajor(itemValue)
-          }>
-        <Picker.Item label="Lập trình viên" value="Lập trình viên" />
-        <Picker.Item label="Tester" value="Tester" />
-        </Picker>
+        <View>
+          <Controller
+          name="major"
+          control={control}
+          rules={{
+            required: true,
+           }}
+          render={({ field: { onChange, value } }) => (
+          <DropDownPicker
+          style={{
+            borderColor: "#A5A5A5",
+            marginVertical: 10,
+            borderRadius: 4,
+            borderWidth: 1,
+            paddingHorizontal: 12,
+            height:50,
+            width:"95%"
+            }} 
+          listMode="SCROLLVIEW"   
+          dropDownDirection="TOP"      
+          open={majorOpen}
+          setOpen={setMajorOpen}
+          items={listMajor}
+          value={value}
+          setValue={onChange}
+          onChangeValue={onChange}
+          ></DropDownPicker>
+          )}
+        ></Controller>
         </View>
       </View>
 
       <View style = {{ alignItems:'center'}}>
         <TouchableOpacity 
         style = {styles.button}
-        onPress={()=>{handleSubmit(onSubmit)}}
+        onPress={()=>{onSubmit()}}
         >
           <Text>Chon</Text>
         </TouchableOpacity>
       </View>
       <StatusBar style="auto" />
-      </ScrollView>
       </KeyboardAvoidingView>
-    </View>
+    </ScrollView>
   );
 }
 
@@ -292,8 +318,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+    paddingHorizontal:20
   },
   inputContainer:{
     paddingBottom:15

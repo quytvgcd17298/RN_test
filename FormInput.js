@@ -18,7 +18,7 @@ const FormInput = ({
     {lable && <Text style = {{marginBottom:5}}>{lable}</Text>}
     <View style={[
             {
-              width:'85%',
+              width:'95%',
               height: 45,
               flexDirection: "row",
               alignItems: "center",
