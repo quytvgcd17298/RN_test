@@ -66,11 +66,6 @@ export default function App() {
     setDatePickerVisibility(false);
   };
 
-  const handleConfirm = (value) => {
-    console.log("A date has been picked: ", value);
-    hideDatePicker();
-  };
-
   const onSubmit = (data) => {
   console.log(getValues(data))
   ;}
@@ -114,15 +109,15 @@ export default function App() {
             rules={{
               required: true,
              }}
-            render={({ field: { onChange, value } }) => (
+            render={({ field: {  onChange, value } }) => (
         <View>
         <DateTimePickerModal 
         isVisible={isDatePickerVisible}
         mode="date"
-        onChangeValue={value}
-        onConfirm={(value, date)=>handleConfirm(value)}
-        onChange={onChange}
-        value={value}
+        onConfirm={(date) => {
+          console.log("A date has been picked: ", date);
+          onChange(date)
+          hideDatePicker();}}
         onCancel={hideDatePicker}
         date={new Date()}
         ></DateTimePickerModal>
@@ -147,7 +142,7 @@ export default function App() {
               color:'#A5A5A5'
             }}
           >
-            {date || "Chọn ngày"}
+            { value || "Chọn ngày"}
           </Text>
         </TouchableOpacity>
               </View>
