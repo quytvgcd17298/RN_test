@@ -7,6 +7,7 @@ const nameRegExp =
 
 export const validateSchema = Yup.object().shape({
   fullname: Yup.string().required("Bắt buộc").matches(nameRegExp, "Tên không hợp lệ").min(12, "Tên người dùng phải nhiều hơn 12 ký tự").max(255),
+  dob:Yup.string().required("Bắt buộc"),
   idcard: Yup.string().required("Bắt buộc").matches(phoneRegExp, "Số cmnd không hợp lệ").min(9, "ID phải nhiều hơn 9 số").max(15, "Id dưới 15 số"),
   phone: Yup.string().matches(phoneRegExp, "Số điện thoại không hợp lệ"),
   email: Yup.string().email("Email không hợp lệ").required("Bắt buộc"),

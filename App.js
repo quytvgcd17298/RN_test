@@ -6,16 +6,11 @@ import FormInput from './FormInput';
 import { Controller, useForm } from 'react-hook-form';
 import { validateSchema } from './Validation';
 import { yupResolver } from "@hookform/resolvers/yup";
-import { CheckBox } from 'react-native-elements';
 
-import RNDateTimePicker from '@react-native-community/datetimepicker';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import moment from "moment";
 
-import DateT from 'react-native-datepicker'
 import DropDownPicker from 'react-native-dropdown-picker';
-import { date } from 'yup';
-
+import moment from 'moment';
 
 const listMajor = [
   { label: 'Lập trình viên', value: 'Lập trình viên' },
@@ -26,17 +21,9 @@ const listMajor = [
 const genderData = ['Nam', 'Nữ', 'Khác'];
 
 export default function App() {
-
-/*   const [male, setMale] = useState(false);
-  const [female, setFemale] = useState(false);
-  const [other, setOther] = useState(false);
-  const [genders, setGenders] = useState([]) */
-
-  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
-   
-
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);   
   const [majorOpen, setMajorOpen] = useState(false)
-
+  const [birthday, setBirthday ] = useState("")
   
   const {
     control,
@@ -61,14 +48,12 @@ export default function App() {
   const showDatePicker = () => {
     setDatePickerVisibility(true);
   };
-
   const hideDatePicker = () => {
     setDatePickerVisibility(false);
   };
 
-  const onSubmit = (data) => {
-  console.log(getValues(data))
-  ;}
+  const onSubmit = (data) => { 
+  console.log(getValues(data))};
 
 
   return (
@@ -113,10 +98,14 @@ export default function App() {
         <View>
         <DateTimePickerModal 
         isVisible={isDatePickerVisible}
+        value={value}
         mode="date"
+        minimumDate={new Date(1957, 0, 1)}
+        maximumDate= {new Date(2009, 11, 31)}
         onConfirm={(date) => {
           console.log("A date has been picked: ", date);
-          onChange(date)
+          onChange(moment(date).format("DD/MM/YYYY"))
+          setBirthday(moment(date).format("DD/MM/YYYY"));
           hideDatePicker();}}
         onCancel={hideDatePicker}
         date={new Date()}
@@ -138,11 +127,11 @@ export default function App() {
             style={{
               flex: 1,
               textAlign:"left",
-              fontSize: 15,
+              fontSize: 15, 
               color:'#A5A5A5'
             }}
           >
-            { value || "Chọn ngày"}
+            { birthday || "Chọn ngày"}
           </Text>
         </TouchableOpacity>
               </View>
@@ -267,9 +256,6 @@ export default function App() {
           <Controller
           name="major"
           control={control}
-          rules={{
-            required: true,
-           }}
           render={({ field: { onChange, value } }) => (
           <DropDownPicker
           style={{
@@ -296,11 +282,11 @@ export default function App() {
       </View>
 
       <View style = {{ alignItems:'center'}}>
-        <TouchableOpacity 
+        <TouchableOpacity  
         style = {styles.button}
-        onPress={()=>{onSubmit()}}
+        onPress={()=>{handleSubmit(onSubmit)}}
         >
-          <Text>Chon</Text>
+          <Text>Chọn</Text>
         </TouchableOpacity>
       </View>
       <StatusBar style="auto" />
