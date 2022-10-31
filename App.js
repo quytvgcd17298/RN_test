@@ -12,18 +12,17 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import DropDownPicker from 'react-native-dropdown-picker';
 import moment from 'moment';
 
+const gender = ["Nam", "Nữ", "Khác"];
 const listMajor = [
   { label: 'Lập trình viên', value: 'Lập trình viên' },
   { label: 'Tester', value: 'Tester' },
   { label: 'Quản lý', value: 'Quản lý' },
-]
-
-const genderData = ['Nam', 'Nữ', 'Khác'];
+];
 
 export default function App() {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);   
-  const [majorOpen, setMajorOpen] = useState(false)
-  const [birthday, setBirthday ] = useState("")
+  const [majorOpen, setMajorOpen] = useState(false);
+  const [birthday, setBirthday ] = useState("");
   
   const {
     control,
@@ -34,10 +33,10 @@ export default function App() {
     defaultValues:{
       fullname:"",
       dob:"",
+      gender:[""],
       idcard:"",
       phone:"",
       email:"",
-      gender:"",
       major:""
     },
     mode: "onChange",
@@ -51,9 +50,15 @@ export default function App() {
   const hideDatePicker = () => {
     setDatePickerVisibility(false);
   };
-
-  const onSubmit = (data) => { 
-  console.log(getValues(data))};
+  
+  
+  const onSubmit = ({data}) => { 
+    try {
+      console.log(getValues(data))
+    } catch(error){
+      console.log(error.message)
+    }
+};
 
 
   return (
@@ -91,9 +96,9 @@ export default function App() {
         <Controller
             name="dob"
             control={control}
-            rules={{
-              required: true,
-             }}
+            rules = {{
+              required: true
+            }}
             render={({ field: {  onChange, value } }) => (
         <View>
         <DateTimePickerModal 
@@ -122,6 +127,7 @@ export default function App() {
             paddingHorizontal: 12,
             borderColor: "#A5A5A5",
           }}
+          errorMessage={errors?.dob?.message}
         >
           <Text
             style={{
@@ -134,6 +140,7 @@ export default function App() {
             { birthday || "Chọn ngày"}
           </Text>
         </TouchableOpacity>
+        {errors.dob && <Text style = {{ fontSize: 14, color:"red"}}>Bắt buộc</Text>}
               </View>
             )}></Controller>
       </View>
@@ -145,7 +152,7 @@ export default function App() {
         control={control}
         render={({ field: { onChange, value } }) => (
           <View style = {{flexDirection:"row"}}>
-          {genderData.map(genderData => (
+          {Array.isArray(gender) ? gender.map((genderData) => (
             <View
             style = {{ padding:15}}
             key={genderData}
@@ -159,13 +166,15 @@ export default function App() {
                 alignItems:'center',
                 borderRadius:15
               }}
-              onPress={() => onChange(genderData)}
+              onPress={() => {onChange(genderData)
+              console.log(getValues("gender"))
+              }}
               >
-                {value === genderData && <Text style = {{ color:"green", fontWeight:'bold'}}>X</Text>}
+                {genderData === value && <Text style = {{ color:"green", fontWeight:'bold'}}>X</Text>}
               </TouchableOpacity>
               <Text>{genderData}</Text>
             </View>
-          ))}
+          )) : []}
         </View>
         )}
         >
@@ -229,6 +238,7 @@ export default function App() {
             name="email"
             control={control}
             rules={{
+              
               required: true,
              }}
             render={({ field: { onChange, value } }) => (
@@ -282,9 +292,9 @@ export default function App() {
       </View>
 
       <View style = {{ alignItems:'center'}}>
-        <TouchableOpacity  
+        <TouchableOpacity
         style = {styles.button}
-        onPress={()=>{handleSubmit(onSubmit)}}
+        onPress={handleSubmit(onSubmit)}
         >
           <Text>Chọn</Text>
         </TouchableOpacity>
