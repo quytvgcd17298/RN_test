@@ -1,12 +1,10 @@
 import { View, Text, SafeAreaView, StyleSheet, SectionList, TouchableOpacity, FlatList } from 'react-native'
 import React, { useState } from "react";
 import myData from '../Components/MyData';
- function FlatView () {
-  const [isVisible, setIsVisible] = useState(false);
+ const FlatView = () => {
+  const [dataShow, setDataShow] = useState(false)
   const [show, setShow] = useState(false)
-  const expand = () => {
-    setIsVisible(!isVisible);
-  };
+
 
 /*   const MapData =(item, index) => (      
       <View key={index}>
@@ -15,43 +13,62 @@ import myData from '../Components/MyData';
     </View>
   ) */
 
-  const renderItem = () => {
+
+  function RenderItem ({item, index}) {
     return(
-      <View>
-        {myData.map((item, index)=>{
-      return(
-        <View key={index}>
-        <Text>ID: {item.id}</Text>
-        <Text>Full name: {item.Fname}</Text>
-        <Text>Data: {item.data.role}</Text>
-        <Text>Data: {item.data.note}</Text>
-        <Text onPress={() => setShow(!show)}>Children:</Text>
-        {show && item.children.map((children, index) => {
-      return (
-        <View style={{marginLeft: 30}} key={index}>
-        <Text>{children.id}</Text>
-        <Text>{children.Fname}</Text>
-        <Text>{children.data.role}</Text>
-        <Text>{children.data.note}</Text>
+      <View key={index} style={{borderBottomWidth:1 }}>
+      <Text>ID: {item.id}</Text>
+      <Text>Fullname: {item.Fname}</Text>
+      <TouchableOpacity onPress={()=> setDataShow(!dataShow)}>
+        <Text>data</Text>
+      </TouchableOpacity>
+      {dataShow && item.data?(
+        <View>
+          <Text>- Role: {item.data.role}</Text>
+          <Text>- Note: {item.data.note}</Text>
+        <Text onPress={()=>setShow(!show)}>Children</Text>
+
+        </View>
+      ):[]}
+        {show && item?.children?.map((itemChild, indexChild)=>{
+        return (
+          <View style={{ marginLeft: 40}} key = {indexChild}>
+          <Text>{itemChild.id}</Text>
+          <Text>{itemChild.Fname}</Text>
+          <Text>Data: </Text>
+          <Text>- Role: {itemChild.data.role}</Text>
+          <Text>- Note: {itemChild.data.note}</Text>
+          <Text onPress={()=>setShow(!show)}>Children</Text>
+          {itemChild.children?.map((itemChildren, indexChildren) => {
+            return (
+              <View style={{ marginLeft: 40}} key={indexChildren}>
+          <Text>{itemChildren.id}</Text>
+          <Text>{itemChildren.Fname}</Text>
+          <Text>Data: </Text>
+          <Text>- Role: {itemChildren.data.role}</Text>
+          <Text>- Note: {itemChildren.data.note}</Text>
+              </View>
+            )
+          })}
+          </View>
+        )
+      })}
       </View>
-      )
-    })} 
-      </View>
-      )
-    })}
-      </View>
-    )
-  }
+  )}
 
   return (
 
-    <View>
+    <SafeAreaView>
       <FlatList
+      style={{
+        marginLeft:25,
+        paddingVertical:10
+      }}
       data={myData}
-      renderItem={renderItem}
-      keyExtractor={item => item}
+      renderItem={({item})=> <RenderItem key={item.id} item={item}/>}
+      keyExtractor={(item, index)=>item.id + index}
       ></FlatList>
-    </View>
+    </SafeAreaView>
 
 /*   <SafeAreaView style={styles.container}>
     {myData.map((item, index)=>{

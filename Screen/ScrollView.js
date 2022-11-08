@@ -1,9 +1,10 @@
 import { View, Text, ScrollView, StyleSheet } from 'react-native'
-import React from 'react'
+import React, { useCallback } from 'react'
 import { useState } from 'react'
 import TreeView from 'react-native-final-tree-view'
 import myData from '../Components/MyData'
 import { AntDesign } from '@expo/vector-icons'; 
+import { ListItem } from 'react-native-elements'
 
 export default function Test() {
   function getIndicator(isExpanded, hasChildrenNodes, hasDataNodes) {
@@ -16,6 +17,9 @@ export default function Test() {
     }
   }
   const [show, setShow] = useState(false)
+  const handleClick= useCallback(()=> {
+    setShow(!show);
+  }, [show, setShow])
   return(
   <ScrollView style={styles.container}>
   <TreeView
@@ -33,7 +37,7 @@ export default function Test() {
         </Text>
         <Text style={{marginLeft: 25 * level}}>Fullname: {node.Fname}</Text>
         <View style={{marginLeft: 25 * level}}>
-        <Text onPress={() => {setShow(!show)}}>Data</Text>
+        <Text onPress={handleClick}>Data</Text>
         {show && (
             <View style={{marginLeft:10}}>
             <Text>- Role: {node.data.role}</Text>

@@ -10,7 +10,6 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import FlatView from './Screen/FlatView';
 import SectionView from './Screen/SectionView';
 
-
 const Tab = createBottomTabNavigator();
 
 export default function App() {
